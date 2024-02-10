@@ -1,0 +1,111 @@
+{
+    "scopeName": "source.named.conf",
+    "patterns": [
+        {
+            "include": "#block"
+        },
+        {
+            "include": "#comment"
+        },
+        {
+            "include": "#identifier"
+        },
+        {
+            "include": "#string"
+        }
+    ],
+    "repository": {
+        "block": {
+            "begin": "{",
+            "end": "}",
+            "beginCaptures": {
+                "0": {
+                    "name": "punctuation.block.open.named.conf"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.block.close.named.conf"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#block"
+                },
+                {
+                    "include": "#comment"
+                },
+                {
+                    "include": "#string"
+                },
+                {
+                    "include": "#address"
+                },
+                {
+                    "include": "#number"
+                },
+                {
+                    "include": "#identifier"
+                }
+            ]
+        },
+        "identifier": {
+            "match": "[a-zA-Z0-9-./_]+",
+            "name": "variable.argument.named.conf"
+        },
+        "string": {
+            "begin": "\"",
+            "end": "\"",
+            "beginCaptures": {
+                "0": {
+                    "name": "punctuation.string.quoted.double.named.conf"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.string.quoted.double.named.conf"
+                }
+            },
+            "name": "string.quoted.double.named.conf"
+        },
+        "address": {
+            "match": "\\b(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?\\b",
+            "name": "constant.address.named.conf"
+        },
+        "number": {
+            "match": "\\b(\\d+)\\b",
+            "captures": {
+                "1": {
+                    "name": "constant.numeric.named.conf"
+                }
+            }
+        },
+        "comment": {
+            "patterns": [
+                {
+                    "match": "//.*$",
+                    "name": "comment.line.semicolon.named.conf"
+                },
+                {
+                    "begin": "/\\*",
+                    "end": "\\*/",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.comment.named.conf"
+                        }
+                    },
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.comment.named.conf"
+                        }
+                    },
+                    "name": "comment.block.named.conf"
+                },
+                {
+                    "match": "#.*$",
+                    "name": "comment.line.hash.named.conf"
+                }
+            ]
+        }
+    }
+}
