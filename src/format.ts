@@ -1,50 +1,20 @@
 import * as vscode from 'vscode';
-import  { StatementContext, StructContext } from "./grammer/NamedConfParser";
+import  { ValueContext } from "./grammer/NamedConfParser";
 import { parse } from "./parser";
+import { ParseTreeWalker } from 'antlr4';
+import NamedConfListener from './grammer/NamedConfListener';
 
 const selector = { language: 'named.conf' };
 
 function format(text: string): string {
   const ctx = parse(text);
-  let newText = '';
-  ctx.statement_list().forEach((statement: StatementContext) => {
-    newText += formatStatement(0, statement);
-  });
 
+  const listener = new FormatListener();
+  const walker = new ParseTreeWalker();
+  walker.walk(listener, ctx);
+
+  const newText = listener.text;
   return newText;
-}
-
-function formatStatement(level: number, ctx: StatementContext): string {
-  let text = '';
-
-  ctx.value_list().forEach((value, i) => {
-    if (i > 0) {
-      text += ' ';
-    }
-
-    const child = value.getChild(0);
-    if (child instanceof StructContext) {
-      text += '{\n';
-      child.statement_list().forEach((value) => {
-        text += tab(level + 1) + formatStatement(level + 1, value);
-      });
-      text += tab(level) + '}';
-    } else {
-      text += child.getText();
-    }
-  });
-  text += ';\n';
-
-  return text;
-}
-
-function tab(level: number): string {
-  let text = '';
-  for (let i = 0; i < level; i++) {
-    text += '    ';
-  }
-
-  return text;
 }
 
 function provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
@@ -62,4 +32,48 @@ export default function registerFormatProvider(context: vscode.ExtensionContext)
     selector,
     { provideDocumentFormattingEdits }
   ));
+}
+
+const INDENT = '    ';
+
+class FormatListener extends NamedConfListener {
+  indent = '';
+  text = '';
+
+  private addIndent() {
+    this.indent += INDENT;
+  }
+
+  private removeIndent() {
+    this.indent = this.indent.slice(0, -4);
+  }
+
+  enterStatement = () => {
+    this.text += this.indent;
+  };
+
+  exitStatement= () => {
+    this.text += ';\n';
+  };
+
+  enterStruct = () => {
+    this.text += '{\n';
+    this.addIndent();
+  };
+
+  exitStruct = () => {
+    this.removeIndent();
+    this.text += this.indent;
+    this.text += '}';
+  };
+
+  enterValue = (ctx: ValueContext) => {
+    if (ctx.parentCtx && ctx.parentCtx.getChild(0) !== ctx) {
+      this.text += ' ';
+    }
+
+    if (!ctx.struct()) {
+      this.text += ctx.getText();
+    }
+  };
 }
