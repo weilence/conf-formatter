@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { parse } from './parser';
 import NamedConfListener from './grammer/NamedConfListener';
 import { ParseTreeWalker, ParserRuleContext, TerminalNode } from 'antlr4';
-import NamedConfParser, { ProgContext, StatementContext, StructContext } from './grammer/NamedConfParser';
+import NamedConfParser, { ProgContext, StatementContext, StructContext, ValueContext } from './grammer/NamedConfParser';
 
 const selector = {language: 'named.conf'};
 
@@ -36,7 +36,7 @@ class SymbolListener extends NamedConfListener {
   };
 
   enterStatement = (ctx: StatementContext) => {
-    const docSymbol = this.getStatementContext(ctx);
+    const docSymbol = this.getSymbol(ctx.value(0));
     if (!docSymbol) {
       return;
     }
@@ -64,9 +64,8 @@ class SymbolListener extends NamedConfListener {
     }
   };
 
-
-  getStatementContext(ctx: StatementContext): vscode.DocumentSymbol | null {
-    const value = ctx.value(0)?.getChild(0);
+  getSymbol(ctx: ValueContext): vscode.DocumentSymbol | null {
+    const value = ctx.getChild(0);
 
     let name: string;
     let kind: vscode.SymbolKind;

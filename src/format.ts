@@ -1,19 +1,21 @@
 import * as vscode from 'vscode';
-import  { ValueContext } from "./grammer/NamedConfParser";
-import { parse } from "./parser";
-import { ParseTreeWalker } from 'antlr4';
+import antlr4 = require('antlr4');
+import { StatementContext, StructContext, ValueContext } from "./grammer/NamedConfParser";
+import { CommonTokenStream, ParseTreeWalker, TerminalNode, TokenStreamRewriter } from 'antlr4';
 import NamedConfListener from './grammer/NamedConfListener';
+import { parse } from './parser';
+import NamedConfLexer from './grammer/NamedConfLexer';
 
 const selector = { language: 'named.conf' };
 
 function format(text: string): string {
   const ctx = parse(text);
 
-  const listener = new FormatListener();
+  const listener = new FormatListener(ctx.parser!.getTokenStream() as CommonTokenStream);
   const walker = new ParseTreeWalker();
   walker.walk(listener, ctx);
 
-  const newText = listener.text;
+  const newText = listener.rewirter.getText();
   return newText;
 }
 
@@ -35,10 +37,19 @@ export default function registerFormatProvider(context: vscode.ExtensionContext)
 }
 
 const INDENT = '    ';
+const HIDDEN_CHANNEL = NamedConfLexer.channelNames.indexOf('HIDDEN');
 
 class FormatListener extends NamedConfListener {
   indent = '';
-  text = '';
+  tokenStream: CommonTokenStream;
+  rewirter: TokenStreamRewriter;
+
+  constructor(tokenStream: CommonTokenStream) {
+    super();
+    this.tokenStream = tokenStream;
+    // @ts-expect-error workaroud for missing type
+    this.rewirter = new antlr4.default.TokenStreamRewriter(tokenStream);
+  }
 
   private addIndent() {
     this.indent += INDENT;
@@ -48,32 +59,39 @@ class FormatListener extends NamedConfListener {
     this.indent = this.indent.slice(0, -4);
   }
 
-  enterStatement = () => {
-    this.text += this.indent;
+  enterStatement = (ctx: StatementContext) => {
+    this.rewirter.insertBefore(ctx.start, this.indent);
   };
 
-  exitStatement= () => {
-    this.text += ';\n';
+  exitStatement = (ctx: StatementContext ) => {
+    this.rewirter.insertAfter(ctx.stop!, '\n');
   };
 
-  enterStruct = () => {
-    this.text += '{\n';
+  enterStruct = (ctx: StructContext) => {
+    this.rewirter.insertAfter(ctx.start, '\n');
     this.addIndent();
   };
 
-  exitStruct = () => {
+  exitStruct = (ctx: StructContext) => {
     this.removeIndent();
-    this.text += this.indent;
-    this.text += '}';
+    this.rewirter.insertBefore(ctx.stop!, this.indent);
   };
 
   enterValue = (ctx: ValueContext) => {
     if (ctx.parentCtx && ctx.parentCtx.getChild(0) !== ctx) {
-      this.text += ' ';
-    }
-
-    if (!ctx.struct()) {
-      this.text += ctx.getText();
+      this.rewirter.insertBefore(ctx.start, ' ');
     }
   };
+
+  visitTerminal(node: TerminalNode): void {
+    const tokens = this.tokenStream.getHiddenTokensToLeft(node.symbol.tokenIndex, HIDDEN_CHANNEL);
+    if (tokens?.length) {
+      for (const token of tokens) {
+        if (token.type === NamedConfLexer.LINE_COMMENT) {
+          this.rewirter.insertBefore(token, this.indent);
+          continue;
+        }
+      }
+    }
+  }
 }
