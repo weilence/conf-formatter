@@ -11,4 +11,4 @@ vsc-extension-quickstart.md
 **/.vscode-test.*
 node_modules/**
 out/**
-!out/main.js
+!out/extension.js

@@ -2,7 +2,7 @@
   "name": "conf-formatter",
   "displayName": "conf-formatter",
   "description": "Format *.conf file",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "Weilence",
   "repository": {
     "type": "git",
@@ -14,30 +14,28 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onLanguage:named.conf"
-  ],
-  "main": "./out/main.js",
+  "main": "./out/extension.js",
   "contributes": {
     "languages": [
       {
         "id": "named.conf",
         "extensions": [
           ".conf"
-        ]
+        ],
+        "configuration": "./configurations/named.conf.json"
       }
     ],
     "grammars": [
       {
         "language": "named.conf",
         "scopeName": "source.named.conf",
-        "path": "./syntaxes/named.conf.tmLanguage.json"
+        "path": "./syntaxes/named.conf.json"
       }
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./ && esbuild ./out/extension.js --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "vscode:prepublish": "npm run compile -- --outDir ./out/temp && esbuild ./out/temp/extension.js --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+    "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext .ts",
