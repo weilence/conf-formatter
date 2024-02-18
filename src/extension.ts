@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import registerFormatProvider from './format';
 import registerSymbolProvider from './symbol';
+import { diagnosticCollection } from './parser';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -12,6 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "conf-formatter" is now active!');
 
+  context.subscriptions.push(diagnosticCollection);
   registerFormatProvider(context);
   registerSymbolProvider(context);
 }

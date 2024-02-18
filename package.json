@@ -2,7 +2,7 @@
   "name": "conf-formatter",
   "displayName": "conf-formatter",
   "description": "Format *.conf file",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "Weilence",
   "repository": {
     "type": "git",

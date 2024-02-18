@@ -2,13 +2,18 @@ import * as vscode from 'vscode';
 import { StatementContext, StructContext, ValueContext } from "./grammer/NamedConfParser";
 import antlr4, { CommonTokenStream, ParseTreeWalker, TerminalNode, TokenStreamRewriter } from 'antlr4';
 import NamedConfListener from './grammer/NamedConfListener';
-import { parse } from './parser';
+import { diagnosticCollection, parse } from './parser';
 import NamedConfLexer from './grammer/NamedConfLexer';
+import logger from './log';
 
 const selector = { language: 'named.conf' };
 
-function format(text: string): string {
-  const ctx = parse(text);
+function format(uri: vscode.Uri, text: string): string {
+  const ctx = parse(uri, text);
+  if (diagnosticCollection.get(uri)?.length) {
+    logger.error('Failed to format due to errors');
+    return text;
+  }
 
   const listener = new FormatListener(ctx.parser!.getTokenStream() as CommonTokenStream);
   const walker = new ParseTreeWalker();
@@ -23,7 +28,7 @@ function provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.T
   const lastLine = document.lineAt(document.lineCount - 1);
   const textRange = new vscode.Range(firstLine.range.start, lastLine.range.end);
   const text = document.getText(textRange);
-  const newText = format(text);
+  const newText = format(document.uri, text);
 
   return [vscode.TextEdit.replace(textRange, newText)];
 }

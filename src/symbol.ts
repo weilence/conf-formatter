@@ -11,7 +11,7 @@ function provideDocumentSymbols(document: vscode.TextDocument):vscode.DocumentSy
   const lastLine = document.lineAt(document.lineCount - 1);
   const textRange = new vscode.Range(firstLine.range.start, lastLine.range.end);
   const text = document.getText(textRange);
-  const ctx = parse(text);
+  const ctx = parse(document.uri, text);
 
   const listener = new SymbolListener();
   const walker = new ParseTreeWalker();
