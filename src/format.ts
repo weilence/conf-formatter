@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import antlr4 = require('antlr4');
 import { StatementContext, StructContext, ValueContext } from "./grammer/NamedConfParser";
-import { CommonTokenStream, ParseTreeWalker, TerminalNode, TokenStreamRewriter } from 'antlr4';
+import antlr4, { CommonTokenStream, ParseTreeWalker, TerminalNode, TokenStreamRewriter } from 'antlr4';
 import NamedConfListener from './grammer/NamedConfListener';
 import { parse } from './parser';
 import NamedConfLexer from './grammer/NamedConfLexer';
@@ -47,8 +46,7 @@ class FormatListener extends NamedConfListener {
   constructor(tokenStream: CommonTokenStream) {
     super();
     this.tokenStream = tokenStream;
-    // @ts-expect-error workaroud for missing type
-    this.rewirter = new antlr4.default.TokenStreamRewriter(tokenStream);
+    this.rewirter = new antlr4.TokenStreamRewriter(tokenStream);
   }
 
   private addIndent() {
