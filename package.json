@@ -12,7 +12,7 @@
     "vscode": "^1.86.0"
   },
   "categories": [
-    "Other"
+    "Programming Languages"
   ],
   "main": "./out/extension.js",
   "contributes": {
