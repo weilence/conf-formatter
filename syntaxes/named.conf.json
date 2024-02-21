@@ -3,89 +3,126 @@
     "scopeName": "source.named.conf",
     "patterns": [
         {
-            "include": "#block"
-        },
-        {
-            "include": "#comment"
-        },
-        {
-            "include": "#identifier"
-        },
-        {
-            "include": "#string"
+            "include": "#statements"
         }
     ],
     "repository": {
+        "statements": {
+            "patterns": [
+                {
+                    "include": "#statement"
+                },
+                {
+                    "include": "#comments"
+                }
+            ]
+        },
+        "statement": {
+            "begin": "(?<=^)",
+            "end": ";",
+            "patterns": [
+                {
+                    "match": "(?<=^\\s*)([a-zA-Z0-9-_]+)\\s+(?=\\S+)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.named.conf"
+                        }
+                    }
+                },
+                {
+                    "include": "#parameter"
+                }
+            ]
+        },
+        "parameter": {
+            "patterns": [
+                {
+                    "include": "#comments"
+                },
+                {
+                    "include": "#block"
+                },
+                {
+                    "include": "#variable"
+                }
+            ]
+        },
         "block": {
             "begin": "{",
             "end": "}",
             "beginCaptures": {
                 "0": {
-                    "name": "punctuation.block.open.named.conf"
+                    "name": "punctuation.definition.begin.bracket.curly.named.conf"
                 }
             },
             "endCaptures": {
                 "0": {
-                    "name": "punctuation.block.close.named.conf"
+                    "name": "punctuation.definition.end.bracket.curly.named.conf"
                 }
             },
             "patterns": [
                 {
-                    "include": "#block"
-                },
-                {
-                    "include": "#comment"
-                },
-                {
-                    "include": "#string"
-                },
-                {
-                    "include": "#address"
-                },
-                {
-                    "include": "#number"
-                },
-                {
-                    "include": "#identifier"
+                    "include": "#statements"
                 }
             ]
         },
-        "identifier": {
-            "match": "[a-zA-Z0-9-./_]+",
-            "name": "variable.argument.named.conf"
-        },
-        "string": {
-            "begin": "\"",
-            "end": "\"",
-            "beginCaptures": {
-                "0": {
-                    "name": "punctuation.string.quoted.double.named.conf"
-                }
-            },
-            "endCaptures": {
-                "0": {
-                    "name": "punctuation.string.quoted.double.named.conf"
-                }
-            },
-            "name": "string.quoted.double.named.conf"
-        },
-        "address": {
-            "match": "\\b(\\d{1,3}\\.){3}\\d{1,3}(/\\d{1,2})?\\b",
-            "name": "constant.address.named.conf"
-        },
-        "number": {
-            "match": "\\b(\\d+)\\b",
-            "captures": {
-                "1": {
-                    "name": "constant.numeric.named.conf"
-                }
-            }
-        },
-        "comment": {
+        "variable": {
             "patterns": [
                 {
-                    "match": "//.*$",
-                    "name": "comment.line.semicolon.named.conf"
+                    "name": "variable.other.ipv4.named.conf",
+                    "match": "([0-9]{1,3}\\.){3}[0-9]{1,3}(/\\d{1,2})?"
+                },
+                {
+                    "name": "variable.other.ipv6.named.conf",
+                    "match": "([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}"
+                },
+                {
+                    "name": "constant.numeric.named.conf",
+                    "match": "[0-9]+(\\.[0-9]+)?"
+                },
+                {
+                    "name": "variable.other.domain.named.conf",
+                    "match": "(?<=zone\\s+)([a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*)|\\."
+                },
+                {
+                    "match": "[a-zA-Z0-9-_]+",
+                    "name": "variable.other.named.conf"
+                },
+                {
+                    "begin": "\"",
+                    "end": "\"",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.begin.named.conf"
+                        }
+                    },
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.end.named.conf"
+                        }
+                    },
+                    "name": "string.quoted.double.named.conf"
+                },
+                {
+                    "include": "#operators"
+                }
+            ]
+        },
+        "operators": {
+            "match": "[!]",
+            "name": "keyword.operator.named.conf"
+        },
+        "comments": {
+            "patterns": [
+                {
+                    "begin": "//",
+                    "end": "$",
+                    "name": "comment.line.double-slash.named.conf"
+                },
+                {
+                    "begin": "#",
+                    "end": "$",
+                    "name": "comment.line.number-sign.named.conf"
                 },
                 {
                     "begin": "/\\*",
@@ -101,10 +138,6 @@
                         }
                     },
                     "name": "comment.block.named.conf"
-                },
-                {
-                    "match": "#.*$",
-                    "name": "comment.line.hash.named.conf"
                 }
             ]
         }
