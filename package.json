@@ -2,7 +2,7 @@
   "name": "conf-formatter",
   "displayName": "conf-formatter",
   "description": "Format *.conf file",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "Weilence",
   "repository": {
     "type": "git",
@@ -23,6 +23,14 @@
           ".conf"
         ],
         "configuration": "./configurations/named.conf.json"
+      },
+      {
+        "id": "zonefile",
+        "extensions": [
+          ".db",
+          ".zone"
+        ],
+        "configuration": "./configurations/zonefile.json"
       }
     ],
     "grammars": [
@@ -30,6 +38,11 @@
         "language": "named.conf",
         "scopeName": "source.named.conf",
         "path": "./syntaxes/named.conf.json"
+      },
+      {
+        "language": "zonefile",
+        "scopeName": "source.zonefile",
+        "path": "./syntaxes/zonefile.json"
       }
     ]
   },

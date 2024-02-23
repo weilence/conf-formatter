@@ -18,7 +18,7 @@
             ]
         },
         "statement": {
-            "begin": "(?<=^)",
+            "begin": "",
             "end": ";",
             "patterns": [
                 {
@@ -69,11 +69,11 @@
         "variable": {
             "patterns": [
                 {
-                    "name": "variable.other.ipv4.named.conf",
+                    "name": "constant.numeric.ipv4.named.conf",
                     "match": "([0-9]{1,3}\\.){3}[0-9]{1,3}(/\\d{1,2})?"
                 },
                 {
-                    "name": "variable.other.ipv6.named.conf",
+                    "name": "constant.numeric.ipv6.named.conf",
                     "match": "([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}"
                 },
                 {

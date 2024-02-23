@@ -1,0 +1,124 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "scopeName": "source.zonefile",
+    "patterns": [
+        {
+            "include": "#comment"
+        },
+        {
+            "include": "#directive"
+        },
+        {
+            "include": "#record"
+        }
+    ],
+    "repository": {
+        "comment": {
+            "match": ";.*$",
+            "name": "comment.line.semicolon.zonefile"
+        },
+        "directive": {
+            "match": "^(\\$(?:TTL|ORIGIN|INCLUDE|GENERATE))\\s+([^;]*)",
+            "captures": {
+                "1": {
+                    "name": "keyword.other.directive.zonefile"
+                },
+                "2": {
+                    "patterns": [
+                        {
+                            "include": "#variable"
+                        }
+                    ]
+                }
+            }
+        },
+        "record": {
+            "patterns": [
+                {
+                    "begin": "^([a-zA-Z0-9-._@]*)\\s+((?:IN|CH|HS|\\d+)\\s+){0,2}([A-Z][A-Z0-9]*)\\s+",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "variable.other.name.zonefile"
+                        },
+                        "2": {
+                            "patterns": [
+                                {
+                                    "match": "\\d+",
+                                    "name": "constant.numeric.ttl.zonefile"
+                                },
+                                {
+                                    "match": "IN|CH|HS",
+                                    "name": "keyword.other.class.zonefile"
+                                }
+                            ]
+                        },
+                        "3": {
+                            "name": "keyword.other.type.zonefile"
+                        }
+                    },
+                    "end": "$",
+                    "patterns": [
+                        {
+                            "include": "#rdata"
+                        }
+                    ]
+                }
+            ]
+        },
+        "rdata": {
+            "patterns": [
+                {
+                    "include": "#comment"
+                },
+                {
+                    "include": "#variable"
+                },
+                {
+                    "begin": "\\(",
+                    "end": "\\)",
+                    "patterns": [
+                        {
+                            "include": "#comment"
+                        },
+                        {
+                            "include": "#variable"
+                        }
+                    ]
+                }
+            ]
+        },
+        "variable": {
+            "patterns": [
+                {
+                    "match": "([0-9]{1,3}\\.){3}[0-9]{1,3}(/\\d{1,2})?",
+                    "name": "constant.numeric.ipv4.zonefile"
+                },
+                {
+                    "match": "([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}",
+                    "name": "constant.numeric.ipv6.zonefile"
+                },
+                {
+                    "match": "\\\\[^\\d]",
+                    "name": "constant.character.escape.zonefile"
+                },
+                {
+                    "match": "\\\\[0-7]{3}",
+                    "name": "constant.numeric"
+                },
+                {
+                    "match": "\\b\\d+\\b",
+                    "name": "constant.numeric.zonefile"
+                },
+                {
+                    "match": "[a-zA-Z0-9-./+=]+",
+                    "name": "variable.other.zonefile"
+                },
+                {
+                    "begin": "\"",
+                    "end": "\"",
+                    "name": "string.quoted.double.zonefile"
+                }
+            ]
+        }
+    }
+}
