@@ -1,4 +1,4 @@
-// Generated from ./NamedConf.g4 by ANTLR 4.13.1
+// Generated from NamedConf.g4 by ANTLR 4.13.2
 // noinspection ES6UnusedImports,JSUnusedGlobalSymbols,JSUnusedLocalSymbols
 
 import {
@@ -27,7 +27,7 @@ export default class NamedConfParser extends Parser {
 	public static readonly LINE_COMMENT = 8;
 	public static readonly INLINE_COMMENT = 9;
 	public static readonly NEWLINE = 10;
-	public static readonly EOF = Token.EOF;
+	public static override readonly EOF = Token.EOF;
 	public static readonly RULE_prog = 0;
 	public static readonly RULE_statement = 1;
 	public static readonly RULE_value = 2;

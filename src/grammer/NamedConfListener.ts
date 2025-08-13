@@ -1,13 +1,13 @@
-// Generated from ./NamedConf.g4 by ANTLR 4.13.1
+// Generated from NamedConf.g4 by ANTLR 4.13.2
 
 import {ParseTreeListener} from "antlr4";
 
 
-import { ProgContext } from "./NamedConfParser";
-import { StatementContext } from "./NamedConfParser";
-import { ValueContext } from "./NamedConfParser";
-import { StructContext } from "./NamedConfParser";
-import { AclContext } from "./NamedConfParser";
+import { ProgContext } from "./NamedConfParser.js";
+import { StatementContext } from "./NamedConfParser.js";
+import { ValueContext } from "./NamedConfParser.js";
+import { StructContext } from "./NamedConfParser.js";
+import { AclContext } from "./NamedConfParser.js";
 
 
 /**
