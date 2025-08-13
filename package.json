@@ -2,7 +2,7 @@
   "name": "conf-formatter",
   "displayName": "conf-formatter",
   "description": "Format *.conf file",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "publisher": "Weilence",
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
     "Programming Languages"
   ],
   "main": "./out/extension.js",
+  "activationEvents": [],
   "contributes": {
     "languages": [
       {
