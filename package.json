@@ -2,7 +2,7 @@
   "name": "conf-formatter",
   "displayName": "conf-formatter",
   "description": "Format *.conf file",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "Weilence",
   "repository": {
     "type": "git",
@@ -20,15 +20,17 @@
     "languages": [
       {
         "id": "named.conf",
-        "extensions": [
-          ".conf"
+        "filenames": [
+          "named.conf"
+        ],
+        "filenamePatterns": [
+          "named.conf.*"
         ],
         "configuration": "./configurations/named.conf.json"
       },
       {
         "id": "zonefile",
         "extensions": [
-          ".db",
           ".zone"
         ],
         "configuration": "./configurations/zonefile.json"
@@ -54,7 +56,8 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "publish": "vsce publish --no-dependencies"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
